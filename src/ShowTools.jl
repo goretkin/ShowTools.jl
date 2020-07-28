@@ -1,15 +1,11 @@
 module ShowTools
 
-# copy verbatim https://github.com/JuliaLang/julia/blob/3909294e78d223c740b7e7a4d00eb2d4771055a7/base/show.jl#L393-L426
-
-function _show_default(io::IO, @nospecialize(x))
+function show_fields(io::IO, @nospecialize(x))
     t = typeof(x)
-    show(io, inferencebarrier(t))
-    print(io, '(')
     nf = nfields(x)
     nb = sizeof(x)
     if nf != 0 || nb == 0
-        if !show_circular(io, x)
+        if !Base.show_circular(io, x)
             recur_io = IOContext(io, Pair{Symbol,Any}(:SHOWN_SET, x),
                                  Pair{Symbol,Any}(:typeinfo, Any))
             for i in 1:nf
@@ -34,8 +30,6 @@ function _show_default(io::IO, @nospecialize(x))
             end
         end
     end
-    print(io,')')
 end
-
 
 end
